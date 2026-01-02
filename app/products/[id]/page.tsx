@@ -87,7 +87,7 @@ export default async function ProductPage(props: { params: Promise<{ id: string 
                         <div className="border-t border-white/10 pt-6 space-y-4">
                             <div className="flex items-center gap-3 text-white/50 text-sm">
                                 <ShieldCheck className="w-5 h-5 text-green-500" />
-                                <span>Secure Payment via Stripe</span>
+                                <span>Secure Payment via Dodo Payments</span>
                             </div>
                             <div className="flex items-center gap-3 text-white/50 text-sm">
                                 <Download className="w-5 h-5 text-cyan-400" />

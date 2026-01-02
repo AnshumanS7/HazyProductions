@@ -8,6 +8,7 @@ export interface IProduct extends Document {
     tags: string[];
     images: string[];
     fileKey: string; // S3 Key for the digital asset
+    dodoProductId?: string; // Linked Dodo Payment Product ID
     mediaType: 'ebook' | 'sfx' | 'template';
     previewUrl?: string; // Public preview (watermarked or snippet)
     isFeatured: boolean;
@@ -24,6 +25,7 @@ const ProductSchema: Schema = new Schema(
         tags: { type: [String], default: [] },
         images: { type: [String], default: [] }, // Array of image URLs
         fileKey: { type: String, required: true, select: false }, // Hidden by default for security
+        dodoProductId: { type: String }, // Linked Dodo Payment Product ID
         mediaType: {
             type: String,
             enum: ['ebook', 'sfx', 'template'],

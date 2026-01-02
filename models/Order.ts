@@ -1,8 +1,11 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import './Product'; // Ensure Product model is registered for populate
 
 export interface IOrder extends Document {
     userId: mongoose.Types.ObjectId;
-    stripeSessionId: string;
+    stripeSessionId?: string;
+    paymentId?: string;
+    provider?: 'stripe' | 'dodo';
     amount: number;
     currency: string;
     status: 'pending' | 'completed' | 'failed';
@@ -15,7 +18,9 @@ export interface IOrder extends Document {
 const OrderSchema: Schema = new Schema(
     {
         userId: { type: Schema.Types.ObjectId, ref: 'User' }, // Optional if guest checkout allowed, but typically required for digital goods
-        stripeSessionId: { type: String, required: true, unique: true },
+        stripeSessionId: { type: String, required: false }, // Legacy support
+        paymentId: { type: String },
+        provider: { type: String, enum: ['stripe', 'dodo'], default: 'stripe' },
         amount: { type: Number, required: true },
         currency: { type: String, default: 'usd' },
         status: {

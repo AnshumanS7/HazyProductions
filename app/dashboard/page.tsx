@@ -9,6 +9,7 @@ import { DownloadButton } from "@/components/dashboard/DownloadButton";
 import { CheckCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from 'next';
+import { ClearCartOnSuccess } from "@/components/dashboard/ClearCartOnSuccess";
 
 export const metadata: Metadata = {
     title: 'Dashboard | HazyProductions',
@@ -27,10 +28,10 @@ export default async function DashboardPage(props: { searchParams: Promise<{ suc
 
     await dbConnect();
 
-    // Fetch confirmed orders
+    // Fetch confirmed and pending orders
     const orders = await Order.find({
         userId: session.user.id,
-        status: 'completed'
+        status: { $in: ['completed', 'pending'] }
     })
         .sort({ createdAt: -1 })
         .populate('items')
@@ -39,6 +40,9 @@ export default async function DashboardPage(props: { searchParams: Promise<{ suc
     return (
         <main className="min-h-screen bg-black text-white">
             <Navbar />
+
+            {/* Logic to clear cart if redirected from payment */}
+            {searchParams?.success === 'true' && <ClearCartOnSuccess />}
 
             <div className="container mx-auto px-4 py-24 max-w-4xl">
                 <h1 className="text-4xl font-bold mb-2">My Dashboard</h1>
@@ -88,10 +92,16 @@ export default async function DashboardPage(props: { searchParams: Promise<{ suc
                                                     </div>
                                                 </div>
 
-                                                <DownloadButton
-                                                    productId={item._id.toString()}
-                                                    fileName={item.title}
-                                                />
+                                                {order.status === 'completed' ? (
+                                                    <DownloadButton
+                                                        productId={item._id.toString()}
+                                                        fileName={item.title}
+                                                    />
+                                                ) : (
+                                                    <span className="px-3 py-1 bg-yellow-500/20 text-yellow-500 text-xs font-bold rounded-full border border-yellow-500/20 animate-pulse">
+                                                        PROCESSING
+                                                    </span>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
