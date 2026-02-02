@@ -11,16 +11,20 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { filename, contentType } = await req.json();
+        const { filename, contentType, type = 'asset' } = await req.json();
 
         if (!filename || !contentType) {
             return NextResponse.json({ error: "Missing filename or contentType" }, { status: 400 });
         }
 
-        const fileKey = `products/${Date.now()}-${filename.replace(/\s+/g, '-')}`;
+        const folder = type === 'image' ? 'public/images' : 'products';
+        const fileKey = `${folder}/${Date.now()}-${filename.replace(/\s+/g, '-')}`;
         const url = await getUploadUrl(fileKey, contentType);
 
-        return NextResponse.json({ url, fileKey });
+        // Construct Public URL (assuming bucket policy allows public read for /public folder)
+        const publicUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileKey}`;
+
+        return NextResponse.json({ url, fileKey, publicUrl });
     } catch (error) {
         console.error("Upload URL error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

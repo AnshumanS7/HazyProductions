@@ -22,6 +22,7 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
         tags: string;
         mediaType: string;
         fileKey: string;
+        images: string[];
     }
 
     const [formData, setFormData] = useState<ProductData>({
@@ -32,6 +33,7 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
         tags: "",
         mediaType: "ebook",
         fileKey: "",
+        images: [],
     });
 
     useEffect(() => {
@@ -57,6 +59,7 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
                         tags: Array.isArray(data.tags) ? data.tags.join(", ") : (data.tags || ""),
                         mediaType: data.mediaType || "ebook",
                         fileKey: data.fileKey || "",
+                        images: Array.isArray(data.images) ? data.images : [],
                     });
                     setFetching(false);
                 } catch (e: any) {
@@ -84,6 +87,7 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
                 body: JSON.stringify({
                     filename: file.name,
                     contentType: file.type,
+                    type: 'asset'
                 }),
             });
 
@@ -105,6 +109,40 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
         } catch (error) {
             console.error(error);
             alert("Upload failed.");
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        try {
+            const res = await fetch("/api/products/upload", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    filename: file.name,
+                    contentType: file.type,
+                    type: 'image'
+                }),
+            });
+
+            const { url, publicUrl } = await res.json();
+            if (!url) throw new Error("Failed to get upload URL");
+
+            await fetch(url, {
+                method: "PUT",
+                body: file,
+                headers: { "Content-Type": file.type },
+            });
+
+            setFormData(prev => ({ ...prev, images: [...prev.images, publicUrl] }));
+        } catch (error) {
+            console.error(error);
+            alert("Image upload failed");
         } finally {
             setUploading(false);
         }
@@ -170,6 +208,36 @@ export default function EditProductPage(props: { params: Promise<{ id: string }>
                             className="w-full bg-white/5 border border-white/10 rounded p-3 focus:border-cyan-400 outline-none h-32"
                             value={formData.description}
                             onChange={e => setFormData({ ...formData, description: e.target.value })}
+                        />
+                    </div>
+
+                    {/* Image Upload Section */}
+                    <div className="p-6 bg-white/5 border border-dashed border-white/20 rounded-xl">
+                        <label className="block mb-4 text-sm font-bold text-cyan-400 flex items-center gap-2">
+                            Product Images
+                        </label>
+
+                        <div className="flex gap-4 mb-4 flex-wrap">
+                            {formData.images.map((img, idx) => (
+                                <div key={idx} className="relative w-24 h-24 bg-black/50 border border-white/10 rounded">
+                                    <img src={img} alt="Product" className="w-full h-full object-cover rounded" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData(p => ({ ...p, images: p.images.filter((_, i) => i !== idx) }))}
+                                        className="absolute -top-2 -right-2 bg-red-500 rounded-full w-5 h-5 text-xs flex items-center justify-center"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageUpload}
+                            disabled={uploading}
+                            className="text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-fuchsia-500 file:text-white hover:file:bg-fuchsia-400 transition-colors"
                         />
                     </div>
 
