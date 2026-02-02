@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 export interface IUser extends Document {
     name?: string;
     email: string;
+    password?: string;
     image?: string;
     role: 'user' | 'admin';
     provider: 'credentials' | 'google';
