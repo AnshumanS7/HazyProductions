@@ -36,7 +36,7 @@ export function GlitchText({ text, className = "" }: GlitchTextProps) {
             y: [0, 0, 1, -1, 0, -2, 0],
             transition: {
                 duration: 2.5,
-                ease: "linear",
+                ease: "linear" as const,
                 repeat: Infinity,
                 repeatType: "mirror" as const,
                 times: [0, 0.9, 0.92, 0.94, 0.96, 0.98, 1] // Glitch only happens at the very end of the cycle
@@ -51,7 +51,7 @@ export function GlitchText({ text, className = "" }: GlitchTextProps) {
             y: [0, 0, -1, 1, 0, 2, 0],
             transition: {
                 duration: 2.5,
-                ease: "linear",
+                ease: "linear" as const,
                 repeat: Infinity,
                 repeatType: "mirror" as const,
                 times: [0, 0.9, 0.92, 0.94, 0.96, 0.98, 1]

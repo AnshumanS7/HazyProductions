@@ -9,11 +9,12 @@ import mongoose from "mongoose";
 // GET reviews for a product
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
         await dbConnect();
-        const { id } = await params;
+        const params = await props.params;
+        const { id } = params;
 
         const reviews = await Review.find({ product: id })
             .populate('user', 'name image')
@@ -30,7 +31,7 @@ export async function GET(
 // POST a new review
 export async function POST(
     req: Request,
-    { params }: { params: { id: string } }
+    props: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -39,7 +40,8 @@ export async function POST(
         }
 
         await dbConnect();
-        const { id: productId } = await params;
+        const params = await props.params;
+        const { id: productId } = params;
         const { rating, comment } = await req.json();
 
         if (!rating || rating < 1 || rating > 5) {

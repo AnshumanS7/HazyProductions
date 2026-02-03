@@ -13,7 +13,7 @@ export function HeartbeatVisualizer() {
             transition: {
                 duration: duration,
                 times: [0, 0.6, 0.85, 1], // 0-60% draw (2.4s), 60%-85% hold, 85%-100% fade out
-                ease: "linear",
+                ease: "linear" as const,
                 repeat: Infinity,
             }
         }
