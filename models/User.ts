@@ -7,6 +7,7 @@ export interface IUser extends Document {
     image?: string;
     role: 'user' | 'admin';
     provider: 'credentials' | 'google';
+    favorites: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,6 +20,7 @@ const UserSchema: Schema = new Schema(
         image: { type: String },
         role: { type: String, enum: ['user', 'admin'], default: 'user' },
         provider: { type: String, default: 'credentials' },
+        favorites: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
     },
     { timestamps: true }
 );

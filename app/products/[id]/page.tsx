@@ -4,6 +4,7 @@ import Product from "@/models/Product";
 import { notFound } from "next/navigation";
 import { Play, FileText, Download, ShieldCheck } from "lucide-react";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
+import { ReviewSection } from "@/components/shop/ReviewSection";
 
 export const dynamic = 'force-dynamic';
 
@@ -96,6 +97,9 @@ export default async function ProductPage(props: { params: Promise<{ id: string 
                         </div>
                     </div>
                 </div>
+
+                {/* Reviews Section */}
+                <ReviewSection productId={serializedProduct._id} />
             </div>
         </main>
     );
