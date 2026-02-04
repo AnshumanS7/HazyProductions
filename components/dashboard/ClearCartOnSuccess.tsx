@@ -13,10 +13,8 @@ export function ClearCartOnSuccess() {
         if (!hasCleared.current) {
             clearCart();
             hasCleared.current = true;
-            // Clean URL to prevent re-triggering (optional, but good UX)
-            router.replace('/dashboard');
         }
-    }, [clearCart, router]);
+    }, [clearCart]);
 
     return null;
 }

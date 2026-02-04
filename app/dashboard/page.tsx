@@ -37,6 +37,8 @@ export default async function DashboardPage(props: { searchParams: Promise<{ suc
         .populate('items')
         .lean();
 
+    console.log(`Dashboard Debug: User ${session.user.email}, Orders: ${orders.length}, Success param: ${searchParams?.success}`);
+
     return (
         <main className="min-h-screen bg-black text-white">
             <Navbar />
@@ -80,7 +82,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ suc
                                 </div>
                                 <div className="p-6">
                                     <div className="space-y-6">
-                                        {order.items.map((item: any) => (
+                                        {order.items.filter((i: any) => i).map((item: any) => (
                                             <div key={item._id.toString()} className="flex items-center justify-between gap-4">
                                                 <div className="flex items-center gap-4">
                                                     {item.images?.[0] && (
