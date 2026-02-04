@@ -1,42 +1,66 @@
 # HazyProductions Digital Storefront
 
-A cinematic, high-performance digital asset store built with Next.js 14, MongoDB, TailwindCSS, and Stripe.
+A cinematic, high-performance digital asset store built with Next.js 15, MongoDB, TailwindCSS v4, and Dodo Payments. Designed for creators, by creators.
 
-## Features
+## 🚀 Features
 
-- **Cinematic UI/UX**: Dark mode, glassmorphism, and smooth animations.
+### Core E-commerce
 - **Digital Products**: Sell Ebooks, SFX, Video Clips, and Templates.
-- **Secure Delivery**: S3/R2 signed URLs for purchased assets.
-- **Payments**: Integrated Stripe Checkout with webhook fulfillment.
-- **Admin Panel**: Manage products and view sales stats.
-- **Authentication**: NextAuth with Google & Credentials.
+- **Secure Delivery**: Signed S3/R2 URLs. Downloads are locked to verified purchasers.
+- **Smart Cart**: Persistent shopping cart with real-time updates.
+- **User Dashboard**: Order history, status tracking, and instant download center.
 
-## Tech Stack
+### User Engagement
+- **Wishlist / Favorites**: Users can curate collections of their favorite assets.
+- **Ratings & Reviews**: Verified purchase protection ensures only real buyers can leave 1-5 star reviews.
+- **Interactive UI**:
+    - **Cipher Text**: Hover effects that decode text dynamically.
+    - **Magnetic Buttons**: Physics-based cursor attraction.
+    - **Floating Relics**: Parallax background elements that drift in 3D space.
+    - **Smoke Backgrounds**: Cinematic video layers.
 
-- **Framework**: Next.js 14 (App Router)
-- **Database**: MongoDB (Mongoose)
-- **Styling**: TailwindCSS v4
-- **Storage**: AWS S3 / Cloudflare R2
-- **Testing**: Jest (Unit), Playwright (E2E)
+### Administration
+- **Admin Panel**: Secure dashboard for product management (Create, Edit, Delete).
+- **Sales Analytics**: Visual overview of revenue and orders.
+- **Asset Management**: Direct upload handling to Cloudflare R2 / AWS S3.
 
-## Getting Started
+## 🛠 Tech Stack
 
-1. **Clone the repo**
-2. **Install dependencies**: `npm install`
-3. **Environment Setup**: Copy `env.example` to `.env` and fill in credentials.
-   - MongoDB connection string
-   - Stripe keys
-   - AWS/R2 keys
-   - NextAuth Secret
-4. **Run Development Server**: `npm run dev`
+- **Framework**: Next.js 15 (App Router / Turbopack)
+- **Database**: MongoDB (Mongoose Schema)
+- **Styling**: TailwindCSS v4 + Framer Motion
+- **Payments**: Dodo Payments (w/ Webhook Fulfillment)
+- **Storage**: Cloudflare R2 / AWS S3
+- **Auth**: NextAuth.js (Google & Credentials)
+- **Testing**: Jest (Unit) & Playwright (E2E)
 
-## Deployment
+## ⚡ Getting Started
 
-- **Vercel**: Connect repo, set environment variables.
-- **MongoDB**: Whitelist Vercel IPs or allow all (0.0.0.0/0).
-- **Stripe**: Add endpoint to Webhooks pointing to `https://your-domain.com/api/webhook/stripe`.
+1. **Clone the repository**
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Configure Environment**:
+   Copy `.env.example` to `.env` and populate:
+   - `MONGODB_URI`
+   - `DODO_PAYMENTS_API_KEY` & `DODO_WEBHOOK_SECRET`
+   - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET_NAME`
+   - `NEXTAUTH_SECRET` & `NEXTAUTH_URL`
+4. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
 
-## Testing
+## 📦 Deployment
 
-- Unit: `npm test`
-- E2E: `npx playwright test`
+- **Vercel**: Recommended for Next.js.
+- **Build Command**: `npm run build`
+- **Output Directory**: `.next`
+
+> **Note**: Ensure all environment variables are set in your deployment provider settings.
+
+## 🧪 Testing
+
+- **Unit Tests**: `npm test`
+- **E2E Tests**: `npx playwright test`
