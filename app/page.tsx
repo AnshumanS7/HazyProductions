@@ -3,6 +3,7 @@ import { Hero } from "@/components/home/Hero";
 import { FeaturedGrid } from "@/components/home/FeaturedGrid";
 import { SmokeBackground } from "@/components/ui/SmokeBackground";
 import { HeartbeatVisualizer } from "@/components/home/HeartbeatVisualizer";
+import { AboutSection } from "@/components/home/AboutSection";
 import Link from "next/link";
 import dbConnect from "@/lib/mongodb";
 import Product from "@/models/Product";
@@ -54,6 +55,9 @@ export default async function Home() {
             <FeaturedGrid products={featuredProducts} />
           </div>
         </section>
+
+        {/* About Section */}
+        <AboutSection />
       </SmokeBackground>
     </main>
   );
