@@ -2,11 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { dodo } from "@/lib/dodo";
 import dbConnect from "@/lib/mongodb";
 import Order from "@/models/Order";
+import WebhookLog from "@/models/WebhookLog";
 
 export async function POST(req: NextRequest) {
     const rawBody = await req.text();
     const signature = req.headers.get("x-dodo-signature");
     const webhookSecret = process.env.DODO_PAYMENTS_WEBHOOK_KEY;
+
+    await dbConnect();
+
+    // Log raw webhook
+    try {
+        await WebhookLog.create({
+            provider: 'dodo',
+            payload: JSON.parse(rawBody),
+            headers: { signature },
+        });
+    } catch (e) {
+        console.error("Failed to log webhook", e);
+    }
 
     if (!webhookSecret) {
         console.warn("Missing DODO_PAYMENTS_WEBHOOK_KEY - Verification Skipped");
