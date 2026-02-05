@@ -82,7 +82,7 @@ export async function POST(req: NextRequest) {
                 name: session.user.name || "Guest"
             },
             product_cart: cartItems,
-            return_url: `${process.env.NEXTAUTH_URL}/dashboard?success=true`
+            return_url: `${process.env.NEXTAUTH_URL || req.headers.get('origin')}/dashboard?success=true`
         });
 
         // Create pending order
