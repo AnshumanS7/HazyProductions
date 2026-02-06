@@ -68,6 +68,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
+        console.log("Creating Dodo Checkout Session...");
         // Dodo Payments Checkout Creation (Using checkoutSessions resource for Hosted Page)
         const sessionResponse: any = await dodo.checkoutSessions.create({
             billing_address: {
@@ -85,12 +86,15 @@ export async function POST(req: NextRequest) {
             return_url: `${process.env.NEXTAUTH_URL || req.headers.get('origin')}/dashboard?success=true`
         });
 
-        // Create pending order
-        // Dodo likely returns 'checkout_session_id' or 'id'. 
-        // We log it to be sure for debug, but fallback to a unique string to prevent DB crash.
-        const dodoPaymentId = sessionResponse.payment_id || sessionResponse.checkout_session_id || sessionResponse.id;
+        console.log("Dodo Session Created:", sessionResponse);
 
-        await Order.create({
+        // Create pending order
+        // Dodo returns 'session_id' in some versions, 'id' in others.
+        const dodoPaymentId = sessionResponse.session_id || sessionResponse.payment_id || sessionResponse.checkout_session_id || sessionResponse.id;
+
+        console.log("Creating Pending Order with ID:", dodoPaymentId);
+
+        const newOrder = await Order.create({
             userId: session.user.id,
             paymentId: dodoPaymentId,
             stripeSessionId: dodoPaymentId || `dodo_legacy_${Date.now()}_${Math.random()}`, // Fail-safe for unique index
@@ -101,11 +105,13 @@ export async function POST(req: NextRequest) {
             status: 'pending',
         } as any);
 
+        console.log("Order Created Successfully:", newOrder._id);
+
         return NextResponse.json({
             url: sessionResponse.payment_link || sessionResponse.checkout_url || sessionResponse.url
         });
     } catch (error: any) {
-        console.error("Dodo Payment Error:", error);
+        console.error("Dodo Create Error:", error);
         return NextResponse.json({ error: `Payment creation failed: ${error.message}` }, { status: 500 });
     }
 }
